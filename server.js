@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const server = http.createServer(app);
 const io = socketIo(server);
 app.get('/join-queue', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/queue.html'));
+    res.sendFile(path.join(__dirname, 'qrcodeSTI/public/queue.html'));
 });
 
 io.on('connection', (socket) => {
