@@ -13,7 +13,7 @@
     <script>
         // Parse URL parameters to get location and queue number
         const params = new URLSearchParams(window.location.search);
-        const location = params.get('location');
+        const queueLocation = params.get('location');
         const queue = params.get('queue');
         const timestamp = params.get('timestamp');
 
@@ -21,8 +21,6 @@
         document.getElementById('confirmation-text').innerText = 
             `You have joined the queue for ${location}. Your queue number is ${queue}. The QR code was generated at: ${new Date(timestamp).toLocaleString()}.`;
     </script>
-    <link rel="icon" type="image/png" href="favicon.ico" />
-
-
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </body>
 </html>
