@@ -3,44 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Queue Confirmation</title>
+    <title>Queue Status</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="customer_queue_style.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
 
-    <h1>Queue Confirmation</h1>
-    <p id="confirmation-text">You have successfully joined the queue.</p>
+    <!-- Header -->
+    <header>STI College - Tagaytay</header>
 
-    <h2>Queue List</h2>
-    <table id="queue-list">
-        <thead>
-            <tr>
-                <th>Location</th>
-                <th>Queue Number</th>
-                <th>Timestamp</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <!-- Main Container -->
+    <div class="container">
+        <div class="wait-time">Estimated Waiting Time: <span id="waiting-time">00:00</span></div>
+        
+        <p id="confirmation-text">You have successfully joined the queue.</p>
+        
+        <div class= "hint-text" id="window-name"><strong>Location</strong></div>
+        <div class= "hint-text">Your queue number is:</div>
+        <div class="queue-number" id="queue-number">Number</div>
+        <p class= "hint-text" id="timestamp-text"><strong>Timestamp</strong></p>
+
+        <!-- Mobile Number Form -->
+        <form id="mobile-form">
+            <input type="tel" id="mobile-number" placeholder="Mobile Number" pattern="[0-9]*" maxlength="10" required>
+            <button type="submit">Send Code</button>
+        </form>
+
+        <!-- Transaction Type Form -->
+        <form id="transaction-form">
+            <select required>
+                <option value="" disabled selected>Select Transaction Type</option>
+                <option value="Type1">Type 1</option>
+                <option value="Type2">Type 2</option>
+                <option value="Type3">Type 3</option>
+            </select>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
 
     <script>
+        // Example countdown timer logic for "Estimated Waiting Time"
+        let totalSeconds = 300; // 5 minutes (300 seconds)
+
+        function startCountdown() {
+            const waitingTimeEl = document.getElementById('waiting-time');
+            const interval = setInterval(() => {
+                if (totalSeconds > 0) {
+                    totalSeconds--;
+                    const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+                    const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+                    waitingTimeEl.textContent = `${minutes}:${seconds}`;
+                } else {
+                    clearInterval(interval);
+                    waitingTimeEl.textContent = '00:00';
+                }
+            }, 1000);
+        }
+
+        // Start countdown when the page loads
+        document.addEventListener('DOMContentLoaded', startCountdown);
+
         const params = new URLSearchParams(window.location.search);
         const queueLocation = params.get('location');
         const queue = params.get('queue');
         const timestamp = new Date(params.get('timestamp')).toLocaleString();
+
+        // Gets a debug message
         document.getElementById('confirmation-text').innerText = 
             `You have joined the queue for ${queueLocation}. Your queue number is ${queue}. The QR code was generated at: ${timestamp}.`;
-        const tableBody = document.getElementById('queue-list').querySelector('tbody');
-        const row = `<tr><td>${queueLocation}</td><td>${queue}</td><td>${timestamp}</td></tr>`;
-        tableBody.innerHTML += row;
+
+        // const tableBody = document.getElementById('queue-list').querySelector('tbody');
+        // const row = `<tr><td>${queueLocation}</td><td>${queue}</td><td>${timestamp}</td></tr>`;
+
+        const windowNameText = document.getElementById('window-name');
+        const queueNumberText = document.getElementById('queue-number');
+        const timestampText = document.getElementById('timestamp-text');
+
+        // tableBody.innerHTML += row;
+
         const socket = new WebSocket('ws://localhost:3000');
+
         socket.addEventListener('open', function () {
             const customerData = {
                 location: queueLocation,
                 queueNumber: queue,
                 timestamp: timestamp
             };
+
+            windowNameText.innerText = queueLocation;
+            queueNumberText.innerText = queue;
+            timestampText.innerText = timestamp;
             socket.send(JSON.stringify(customerData));
         });
     </script>
