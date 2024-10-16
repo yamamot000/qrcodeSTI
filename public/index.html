@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Generator</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
 
@@ -15,7 +14,6 @@
         <div class="qr-section">
             <div class="queue-count" id="cashier-count">Cashier Queue</div>
             <div class="qr-code" id="cashier"></div>
-            <!-- Queue number and timestamp display -->
             <p>Queue Number: <span id="cashier-queue-number"></span></p>
             <p>Generated at: <span class="timestamp" id="cashier-timestamp"></span></p>
         </div>
@@ -23,7 +21,6 @@
         <div class="qr-section">
             <div class="queue-count" id="registrar-count">Registrar Queue</div>
             <div class="qr-code" id="registrar"></div>
-            <!-- Queue number and timestamp display -->
             <p>Queue Number: <span id="registrar-queue-number"></span></p>
             <p>Generated at: <span class="timestamp" id="registrar-timestamp"></span></p>
         </div>
@@ -31,14 +28,31 @@
         <div class="qr-section">
             <div class="queue-count" id="front-desk-count">Front Desk Queue</div>
             <div class="qr-code" id="front-desk"></div>
-            <!-- Queue number and timestamp display -->
             <p>Queue Number: <span id="front-desk-queue-number"></span></p>
             <p>Generated at: <span class="timestamp" id="front-desk-timestamp"></span></p>
         </div>
     </div>
 
+    <h2>Scanned Customers</h2>
+    <ul id="scanned-customers"></ul>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="script.js"></script>
+
+    <script>
+        const socket = new WebSocket('ws://localhost:3000');
+
+        socket.addEventListener('message', function (event) {
+            const customerData = JSON.parse(event.data);
+            console.log('Customer data received:', customerData);
+
+            const list = document.getElementById('scanned-customers');
+            const listItem = document.createElement('li');
+            listItem.textContent = `Customer joined: Location: ${customerData.location}, Queue: ${customerData.queueNumber}, Time: ${customerData.timestamp}`;
+            
+            list.appendChild(listItem);
+        });
+    </script>
 
 </body>
 </html>
