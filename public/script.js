@@ -17,8 +17,7 @@ function generateQRCode(elementId, location, queueNumber) {
         second: '2-digit',
         hour12: true  // Use 12-hour format
     });
-    const qrCodeURL = `http://localhost:3000/join-queue?location=${location}&queue=${queueNumber}&timestamp=${timestamp}`;
-
+    const qrCodeURL = `https://yamamot000.github.io/public/queue.html?location=${location}&queue=${queueNumber}&timestamp=${timestamp}`;
 
     document.getElementById(elementId).innerHTML = '';
 
