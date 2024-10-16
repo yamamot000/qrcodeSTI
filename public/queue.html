@@ -43,6 +43,10 @@
     </div>
 
     <script>
+        const windowNameText = document.getElementById('window-name');
+        const queueNumberText = document.getElementById('queue-number');
+        const timestampText = document.getElementById('timestamp-text');
+
         // Example countdown timer logic for "Estimated Waiting Time"
         let totalSeconds = 300; // 5 minutes (300 seconds)
 
@@ -61,8 +65,14 @@
             }, 1000);
         }
 
-        // Start countdown when the page loads
-        document.addEventListener('DOMContentLoaded', startCountdown);
+        function setInnerTexts() {
+            windowNameText.innerText = `${queueLocation}` || 'null';
+            console.log("Changed window name");
+            queueNumberText.innerText = `${queue}` || 'null';
+            console.log("Changed queue number");
+            timestampText.innerText = `${timestamp}` || 'null';
+            console.log("Changed timestamp text");
+        }
 
         const params = new URLSearchParams(window.location.search);
         const queueLocation = params.get('location');
@@ -72,19 +82,7 @@
         // Gets a debug message
         document.getElementById('confirmation-text').innerText = 
             `You have joined the queue for ${queueLocation}. Your queue number is ${queue}. The QR code was generated at: ${timestamp}.`;
-
-        windowNameText.innerText = `${queueLocation}`;
-        queueNumberText.innerText = `${queue}`;
-        timestampText.innerText = `${timestamp}`;
-        // const tableBody = document.getElementById('queue-list').querySelector('tbody');
-        // const row = `<tr><td>${queueLocation}</td><td>${queue}</td><td>${timestamp}</td></tr>`;
-
-        const windowNameText = document.getElementById('window-name');
-        const queueNumberText = document.getElementById('queue-number');
-        const timestampText = document.getElementById('timestamp-text');
-
-        // tableBody.innerHTML += row;
-
+            
         const socket = new WebSocket('ws://localhost:3000');
 
         socket.addEventListener('open', function () {
@@ -94,6 +92,12 @@
                 timestamp: timestamp
             };
             socket.send(JSON.stringify(customerData));
+        });
+
+        // Start countdown when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            startCountdown();
+            setInnerTexts();
         });
     </script>
 </body>
