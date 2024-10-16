@@ -25,21 +25,24 @@
     </table>
 
     <script>
-        // Parse URL parameters to get location, queue number, and timestamp
         const params = new URLSearchParams(window.location.search);
         const queueLocation = params.get('location');
         const queue = params.get('queue');
         const timestamp = new Date(params.get('timestamp')).toLocaleString();
-
-        // Display confirmation text
         document.getElementById('confirmation-text').innerText = 
             `You have joined the queue for ${queueLocation}. Your queue number is ${queue}. The QR code was generated at: ${timestamp}.`;
-
-        // Append the customer details to the queue list table
         const tableBody = document.getElementById('queue-list').querySelector('tbody');
         const row = `<tr><td>${queueLocation}</td><td>${queue}</td><td>${timestamp}</td></tr>`;
         tableBody.innerHTML += row;
+        const socket = new WebSocket('ws://localhost:3000');
+        socket.addEventListener('open', function () {
+            const customerData = {
+                location: queueLocation,
+                queueNumber: queue,
+                timestamp: timestamp
+            };
+            socket.send(JSON.stringify(customerData));
+        });
     </script>
-
 </body>
 </html>
