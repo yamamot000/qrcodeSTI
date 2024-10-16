@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queue Confirmation</title>
+</head>
+<body>
+
+    <h1>Queue Confirmation</h1>
+    <p id="confirmation-text">You have successfully joined the queue.</p>
+
+    <script>
+        // Parse URL parameters to get location and queue number
+        const params = new URLSearchParams(window.location.search);
+        const location = params.get('location');
+        const queue = params.get('queue');
+        const timestamp = params.get('timestamp');
+
+        // Display the queue information
+        document.getElementById('confirmation-text').innerText = 
+            `You have joined the queue for ${location}. Your queue number is ${queue}. The QR code was generated at: ${new Date(timestamp).toLocaleString()}.`;
+    </script>
+    <link rel="icon" type="image/png" href="favicon.ico" />
+
+
+</body>
+</html>
