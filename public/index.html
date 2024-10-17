@@ -43,14 +43,12 @@
         const socket = new WebSocket('ws://localhost:3000');
 
         socket.addEventListener('message', function (event) {
-            const customerData = JSON.parse(event.data);
-            console.log('Customer data received:', customerData);
-            updateQueueNumbers(customerData.location, customerData.queueNumber);
-            const list = document.getElementById('scanned-customers');
-            const listItem = document.createElement('li');
-            listItem.textContent = `Customer joined: Location: ${customerData.location}, Queue: ${customerData.queueNumber}, Time: ${customerData.timestamp}`;
-            list.appendChild(listItem);
-        });
+        const customerData = JSON.parse(event.data);
+        const list = document.getElementById('scanned-customers');
+        const listItem = document.createElement('li');
+        listItem.textContent = `Customer joined: Location: ${customerData.location}, Queue: ${customerData.queueNumber}, Time: ${customerData.timestamp}`;
+        list.appendChild(listItem);
+    });
     </script>
 
 </body>
