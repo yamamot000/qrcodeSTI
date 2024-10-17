@@ -33,27 +33,41 @@ function refreshQRCodes() {
 function updateQueueNumbers(location, newQueueNumber) {
     if (location === 'cashier') {
         cashierQueue = newQueueNumber;
+        document.getElementById('cashier-queue-number').textContent = cashierQueue;
         generateQRCode('cashier', 'cashier', cashierQueue);
     } else if (location === 'registrar') {
         registrarQueue = newQueueNumber;
+        document.getElementById('registrar-queue-number').textContent = registrarQueue;
         generateQRCode('registrar', 'registrar', registrarQueue);
     } else if (location === 'front-desk') {
         frontDeskQueue = newQueueNumber;
+        document.getElementById('front-desk-queue-number').textContent = frontDeskQueue;
         generateQRCode('front-desk', 'front-desk', frontDeskQueue);
     }
 }
 const socket = new WebSocket('ws://localhost:3000');
 
+function onQRCodeScan(location) {
+    const data = { location: location };
+    socket.emit('customer-scanned', data);
+}
 socket.addEventListener('message', function (event) {
     const customerData = JSON.parse(event.data);
     console.log('Customer data received:', customerData);
-
+    updateQueueNumbers(customerData.location, customerData.queueNumber);
     const list = document.getElementById('scanned-customers');
     const listItem = document.createElement('li');
     listItem.textContent = `Customer joined: Location: ${customerData.location}, Queue: ${customerData.queueNumber}, Time: ${customerData.timestamp}`;
     list.appendChild(listItem);
-
-    updateQueueNumbers(customerData.location, customerData.queueNumber);
 });
+function simulateScan(location) {
+    onQRCodeScan(location);
+}
+function simulateAllScans() {
+    onQRCodeScan('cashier');
+    onQRCodeScan('registrar');
+    onQRCodeScan('front-desk');
+}
 setInterval(refreshQRCodes, 30000);
 window.onload = refreshQRCodes;
+simulateAllScans();
