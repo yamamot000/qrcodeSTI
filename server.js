@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
         io.emit('update-queue',{
             location: data.location,
             queueNumber: data.queueNumber,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toLocaleString()
         });
 
     });
