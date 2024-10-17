@@ -46,12 +46,13 @@
         const windowNameText = document.getElementById('window-name');
         const queueNumberText = document.getElementById('queue-number');
         const timestampText = document.getElementById('timestamp-text');
+        const queueMessageText = document.getElementById('confirmation-text');
+        const waitingTimeEl = document.getElementById('waiting-time');
 
         // Example countdown timer logic for "Estimated Waiting Time"
         let totalSeconds = 300; // 5 minutes (300 seconds)
 
         function startCountdown() {
-            const waitingTimeEl = document.getElementById('waiting-time');
             const interval = setInterval(() => {
                 if (totalSeconds > 0) {
                     totalSeconds--;
@@ -65,13 +66,34 @@
             }, 1000);
         }
 
+        // Sets text inside the queue card
         function setInnerTexts() {
-            windowNameText.innerText = `${queueLocation}` || 'null';
-            console.log("Changed window name");
-            queueNumberText.innerText = `${queue}` || 'null';
-            console.log("Changed queue number");
-            timestampText.innerText = `${timestamp}` || 'null';
-            console.log("Changed timestamp text");
+            // Throws error if either one of the values are null.
+            try {
+                if (queueLocation != null && queue != null && timestamp != null){
+                    console.log(queueLocation, ' ', queue, ' ', timestamp);
+                    startCountdown();
+                    windowNameText.innerText = `${queueLocation}`;
+                    queueNumberText.innerText = `${queue}`;
+                    timestampText.innerText = `${timestamp}`;
+                } else {
+                    throw error;
+                }
+            } catch (error) {
+                console.error('Empty queue card');
+                
+                // Sets text to invalid
+                let invalidText = `INVALID`;
+                waitingTimeEl.textContent = invalidText;
+                queueMessageText.innerText = `This is an invalid queue card. Please scan a QR code to get a genuine queue card.`;
+                windowNameText.innerText = invalidText;
+                queueNumberText.innerText = invalidText;
+                timestampText.innerText = invalidText;
+
+                alert(`This is an invalid queue card.`);
+            }
+
+
         }
 
         const params = new URLSearchParams(window.location.search);
@@ -80,7 +102,7 @@
         const timestamp = new Date(params.get('timestamp')).toLocaleString();
 
         // Gets a debug message
-        document.getElementById('confirmation-text').innerText = 
+        queueMessageText.innerText = 
             `You have joined the queue for ${queueLocation}. Your queue number is ${queue}. The QR code was generated at: ${timestamp}.`;
             
         const socket = new WebSocket('ws://localhost:3000');
@@ -96,7 +118,6 @@
 
         // Start countdown when the page loads
         document.addEventListener('DOMContentLoaded', function() {
-            startCountdown();
             setInnerTexts();
         });
     </script>
