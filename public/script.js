@@ -6,7 +6,7 @@ let frontDeskQueue = 1;
 // Links are unique based on location, queue number, and timestamp
 function generateQRCode(elementId, location, queueNumber) {
     const now = new Date();
-    const timestamp = now.toISOString();
+    const timestamp = now.toLocaleString();
     const formattedTimestamp = now.toLocaleString('en-US', {
         year: 'numeric',
         month: '2-digit',
