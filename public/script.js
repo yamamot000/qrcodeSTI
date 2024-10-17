@@ -2,6 +2,8 @@ let cashierQueue = 1;
 let registrarQueue = 1;
 let frontDeskQueue = 1;
 
+// Generates QR Code to be scanned by the customer
+// Links are unique based on location, queue number, and timestamp
 function generateQRCode(elementId, location, queueNumber) {
     const now = new Date();
     const timestamp = now.toISOString();
@@ -25,11 +27,15 @@ function generateQRCode(elementId, location, queueNumber) {
     document.getElementById(`${elementId}-timestamp`).innerText = formattedTimestamp;
     console.log(`QR Code generated for: ${qrCodeURL}`);
 }
+
+// Master function that calls the generateQRCodes function 3 times
 function refreshQRCodes() {
     generateQRCode('cashier', 'cashier', cashierQueue);
     generateQRCode('registrar', 'registrar', registrarQueue);
     generateQRCode('front-desk', 'front-desk', frontDeskQueue);
 }
+
+// Generates a new queue number when QR code is scanned.
 function updateQueueNumbers(location, newQueueNumber) {
     if (location === 'cashier') {
         cashierQueue = newQueueNumber;
@@ -45,16 +51,21 @@ function updateQueueNumbers(location, newQueueNumber) {
         generateQRCode('front-desk', 'front-desk', frontDeskQueue);
     }
 }
+
 const socket = new WebSocket('ws://localhost:3000');
 
+// Event that triggers when a QR is scanned
 function onQRCodeScan(location) {
     const data = { location: location };
     socket.emit('customer-scanned', data);
 }
+
+// Socket EventListener
 socket.addEventListener('message', function (event) {
     const customerData = JSON.parse(event.data);
     console.log('Customer data received:', customerData);
     updateQueueNumbers(customerData.location, customerData.queueNumber);
+    console.log(customerData.queueNumber);
     const list = document.getElementById('scanned-customers');
     const listItem = document.createElement('li');
     listItem.textContent = `Customer joined: Location: ${customerData.location}, Queue: ${customerData.queueNumber}, Time: ${customerData.timestamp}`;
