@@ -12,6 +12,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const server = http.createServer(app);
 const io = socketIo(server);
+let cashierQueue = 1;
+let registrarQueue = 1;
+let frontDeskQueue = 1;
+
 app.get('/join-queue', (req, res) => {
     res.sendFile(path.join(__dirname, 'qrcodeSTI/public/queue.html'));
 });
@@ -20,7 +24,20 @@ io.on('connection', (socket) => {
     console.log('A client connected');
     socket.on('customer-scanned', (data) => {
         console.log('Customer scanned:', data);
-        io.emit('update-queue', data);
+        let updatedQueueNumber;
+        if (data.location === 'cashier') {
+            updatedQueueNumber = ++cashierQueue;  
+        } else if (data.location === 'registrar') {
+            updatedQueueNumber = ++registrarQueue; 
+        } else if (data.location === 'front-desk') {
+            updatedQueueNumber = ++frontDeskQueue; 
+        }
+        io.emit('update-queue',{
+            location: data.location,
+            queueNumber: data.queueNumber,
+            timestamp: data.timestamp
+        });
+
     });
     socket.on('disconnect', () => {
         console.log('A client disconnected');
