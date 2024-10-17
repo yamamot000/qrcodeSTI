@@ -115,6 +115,13 @@
             };
             socket.send(JSON.stringify(customerData));
         });
+        socket.addEventListener('error', function (error) {
+            console.error('WebSocket error:', error);
+        });
+
+        socket.addEventListener('close', function () {
+            console.log('WebSocket connection closed');
+        });
 
         // Start countdown when the page loads
         document.addEventListener('DOMContentLoaded', function() {
