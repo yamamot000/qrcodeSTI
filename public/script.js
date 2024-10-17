@@ -25,6 +25,11 @@ function generateQRCode(elementId, location, queueNumber) {
     document.getElementById(`${elementId}-timestamp`).innerText = formattedTimestamp;
     console.log(`QR Code generated for: ${qrCodeURL}`);
 }
+function refreshQRCodes() {
+    generateQRCode('cashier', 'cashier', cashierQueue);
+    generateQRCode('registrar', 'registrar', registrarQueue);
+    generateQRCode('front-desk', 'front-desk', frontDeskQueue);
+}
 function updateQueueNumbers(location, newQueueNumber) {
     if (location === 'cashier') {
         cashierQueue = newQueueNumber;
@@ -37,7 +42,6 @@ function updateQueueNumbers(location, newQueueNumber) {
         generateQRCode('front-desk', 'front-desk', frontDeskQueue);
     }
 }
-
 const socket = new WebSocket('ws://localhost:3000');
 
 socket.addEventListener('message', function (event) {
@@ -51,9 +55,5 @@ socket.addEventListener('message', function (event) {
 
     updateQueueNumbers(customerData.location, customerData.queueNumber);
 });
-
-window.onload = function() {
-    generateQRCode('cashier', 'cashier', cashierQueue);
-    generateQRCode('registrar', 'registrar', registrarQueue);
-    generateQRCode('front-desk', 'front-desk', frontDeskQueue);
-};
+setInterval(refreshQRCodes, 30000);
+window.onload = refreshQRCodes;
