@@ -25,10 +25,35 @@ function generateQRCode(elementId, location, queueNumber) {
     document.getElementById(`${elementId}-timestamp`).innerText = formattedTimestamp;
     console.log(`QR Code generated for: ${qrCodeURL}`);
 }
-function updateQRCodes() {
-    generateQRCode('cashier', 'cashier', cashierQueue++);
-    generateQRCode('registrar', 'registrar', registrarQueue++);
-    generateQRCode('front-desk', 'front-desk', frontDeskQueue++);
+function updateQueueNumbers(location, newQueueNumber) {
+    if (location === 'cashier') {
+        cashierQueue = newQueueNumber;
+        generateQRCode('cashier', 'cashier', cashierQueue);
+    } else if (location === 'registrar') {
+        registrarQueue = newQueueNumber;
+        generateQRCode('registrar', 'registrar', registrarQueue);
+    } else if (location === 'front-desk') {
+        frontDeskQueue = newQueueNumber;
+        generateQRCode('front-desk', 'front-desk', frontDeskQueue);
+    }
 }
-setInterval(updateQRCodes, 30000);
-window.onload = updateQRCodes;
+
+const socket = new WebSocket('ws://localhost:3000');
+
+socket.addEventListener('message', function (event) {
+    const customerData = JSON.parse(event.data);
+    console.log('Customer data received:', customerData);
+
+    const list = document.getElementById('scanned-customers');
+    const listItem = document.createElement('li');
+    listItem.textContent = `Customer joined: Location: ${customerData.location}, Queue: ${customerData.queueNumber}, Time: ${customerData.timestamp}`;
+    list.appendChild(listItem);
+
+    updateQueueNumbers(customerData.location, customerData.queueNumber);
+});
+
+window.onload = function() {
+    generateQRCode('cashier', 'cashier', cashierQueue);
+    generateQRCode('registrar', 'registrar', registrarQueue);
+    generateQRCode('front-desk', 'front-desk', frontDeskQueue);
+};
