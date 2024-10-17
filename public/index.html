@@ -39,24 +39,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="script.js"></script>
 
-    <script>
+     <script>
         const socket = new WebSocket('ws://localhost:3000');
 
         socket.addEventListener('message', function (event) {
             const customerData = JSON.parse(event.data);
             console.log('Customer data received:', customerData);
-
+            updateQueueNumbers(customerData.location, customerData.queueNumber);
             const list = document.getElementById('scanned-customers');
             const listItem = document.createElement('li');
             listItem.textContent = `Customer joined: Location: ${customerData.location}, Queue: ${customerData.queueNumber}, Time: ${customerData.timestamp}`;
             list.appendChild(listItem);
-            if (customerData.location === 'cashier') {
-                cashierQueue = customerData.queueNumber + 1;
-            } else if (customerData.location === 'registrar') {
-                registrarQueue = customerData.queueNumber + 1;
-            } else if (customerData.location === 'front-desk') {
-                frontDeskQueue = customerData.queueNumber + 1;
-            }
         });
     </script>
 
