@@ -6,7 +6,8 @@ let frontDeskQueue = 1;
 // Links are unique based on location, queue number, and timestamp
 function generateQRCode(elementId, location, queueNumber) {
     const now = new Date();
-    const timestamp = now.toLocaleString();
+    // Changes time to UNIX time. Making it numbers only on the timestamp
+    const timestamp = Math.floor(now.getTime() / 1000)
     const formattedTimestamp = now.toLocaleString('en-US', {
         year: 'numeric',
         month: '2-digit',
@@ -55,9 +56,9 @@ function updateQueueNumbers(location, newQueueNumber) {
 const socket = new WebSocket('ws://localhost:3000');
 
 // Event that triggers when a QR is scanned
-function onQRCodeScan(location) {
+async function onQRCodeScan(location) {
     const data = { location: location };
-    socket.emit('customer-scanned', data);
+    socket.send('customer-scanned', data);
 }
 
 // Socket EventListener

@@ -26,11 +26,11 @@ io.on('connection', (socket) => {
         console.log('Customer scanned:', data);
         let updatedQueueNumber;
         if (data.location === 'cashier') {
-            updatedQueueNumber = ++cashierQueue;  
+            updatedQueueNumber = cashierQueue++;  
         } else if (data.location === 'registrar') {
-            updatedQueueNumber = ++registrarQueue; 
+            updatedQueueNumber = registrarQueue++; 
         } else if (data.location === 'front-desk') {
-            updatedQueueNumber = ++frontDeskQueue; 
+            updatedQueueNumber = frontDeskQueue++; 
         }
         io.emit('update-queue',{
             location: data.location,
