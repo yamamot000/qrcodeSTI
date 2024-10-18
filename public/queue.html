@@ -48,27 +48,7 @@
         const timestampText = document.getElementById('timestamp-text');
         const queueMessageText = document.getElementById('confirmation-text');
         const waitingTimeEl = document.getElementById('waiting-time');
-
-
         const token = new URLSearchParams(window.location.search).get('token');
-
-        if (token) {
-        fetch('verify_access.php', {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ token: token }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'already_accessed') {
-            alert('This page has already been accessed. You cannot open it again.');
-            // window.location.href = 'https://your-backend-url.com/error';
-            }
-        });
-        }
-
 
         // Example countdown timer logic for "Estimated Waiting Time"
         let totalSeconds = 300; // 5 minutes (300 seconds)
@@ -130,7 +110,25 @@
             
         const socket = new WebSocket('ws://localhost:3000');
 
+        // Event listener that triggers when page is opened on mobile
         socket.addEventListener('open', function () {
+            // Checks token if it's valid
+            if (token) {
+            fetch('verify_access.php', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ token: token }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'already_accessed') {
+                alert('This page has already been accessed. You cannot open it again.');
+                // window.location.href = 'https://your-backend-url.com/error';
+                }
+            });
+            }
             const customerData = {
                 location: queueLocation,
                 queueNumber: queue,
