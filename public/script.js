@@ -57,7 +57,7 @@ const socket = new WebSocket('ws://localhost:3000');
 // Event that triggers when a QR is scanned
 function onQRCodeScan(location) {
     const data = { location: location };
-    socket.emit('customer-scanned', data);
+    socket.send('customer-scanned', data);
 }
 
 // Socket EventListener
@@ -65,20 +65,11 @@ socket.addEventListener('message', function (event) {
     const customerData = JSON.parse(event.data);
     console.log('Customer data received:', customerData);
     updateQueueNumbers(customerData.location, customerData.queueNumber);
-    console.log(customerData.queueNumber);
+    
     const list = document.getElementById('scanned-customers');
     const listItem = document.createElement('li');
     listItem.textContent = `Customer joined: Location: ${customerData.location}, Queue: ${customerData.queueNumber}, Time: ${customerData.timestamp}`;
     list.appendChild(listItem);
 });
-function simulateScan(location) {
-    onQRCodeScan(location);
-}
-function simulateAllScans() {
-    onQRCodeScan('cashier');
-    onQRCodeScan('registrar');
-    onQRCodeScan('front-desk');
-}
 setInterval(refreshQRCodes, 30000);
 window.onload = refreshQRCodes;
-simulateAllScans();
