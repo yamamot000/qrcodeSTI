@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="bootstrap.min.css">
     <link rel="stylesheet" href="customer_queue_style.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="jquery-3.6.0.min.js"></script>
 </head>
 <body>
 
@@ -14,7 +15,7 @@
     <header>STI College - Tagaytay</header>
 
     <!-- Main Container -->
-    <div class="container">
+    <div class="container" id="container">
         <p>Version: 10182024.linking</p><br>
         <div class="wait-time">Estimated Waiting Time: <span id="waiting-time">00:00</span></div>     
         <p id="confirmation-text">You have successfully joined the queue.</p>
@@ -83,16 +84,9 @@
                     throw error;
                 }
             } catch (error) {
-                console.error('Empty queue card');
-                
-                // Sets text to invalid
-                let invalidText = `INVALID`;
-                waitingTimeEl.textContent = invalidText;
-                queueMessageText.innerText = `This is an invalid queue card. Please scan a QR code to get a genuine queue card.`;
-                windowNameText.innerText = invalidText;
-                queueNumberText.innerText = invalidText;
-                timestampText.innerText = invalidText;
-
+                // Sets invalid display
+                $("#container").load(`invalid_queue.html`);
+                console.log(`Invalid page loaded`);
                 alert(`This is an invalid queue card.`);
             }
 
