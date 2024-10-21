@@ -62,15 +62,18 @@ function onQRCodeScan(location) {
 }
 
 // Socket EventListener
-socket.addEventListener('message', function (event) {
-    const customerData = JSON.parse(event.data);
-    console.log('Customer data received:', customerData);
-    updateQueueNumbers(customerData.location, customerData.queueNumber);
-    
-    const list = document.getElementById('scanned-customers');
-    const listItem = document.createElement('li');
-    listItem.textContent = `Customer joined: Location: ${customerData.location}, Queue: ${customerData.queueNumber}, Time: ${customerData.timestamp}`;
-    list.appendChild(listItem);
-});
+const socket = new WebSocket('ws://localhost:3000');
+    socket.addEventListener('message', function (event) {
+        console.log('Data received:', event.data);
+        const customerData = (event.data);
+        const list = document.getElementById('scanned-customers');
+        const listItem = document.createElement('li');
+        listItem.textContent = `Customer joined: Location: ${customerData.location}, Queue: ${customerData.queueNumber}, Time: ${customerData.timestamp}`;
+        list.appendChild(listItem);
+    });
+    function onQRCodeScan(location) {
+        const data = JSON.stringify({ location: location });
+        socket.send(data);
+    }
 setInterval(refreshQRCodes, 30000);
 window.onload = refreshQRCodes;
