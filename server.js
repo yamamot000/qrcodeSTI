@@ -32,16 +32,16 @@ io.on('connection', (socket) => {
         } else if (data.location === 'front-desk') {
             updatedQueueNumber = ++frontDeskQueue; 
         }
-        /*io.emit('update-queue',{
+        io.emit('update-queue',{
             location: data.location,
             queueNumber: data.queueNumber,
             timestamp: new Date().toLocaleString()
         });
-        console.log('Emitting update:', {
+        /*console.log('Emitting update:', {
             location: data.location,
             queueNumber: updatedQueueNumber,
             timestamp: new Date().toLocaleString()
-        });*/
+        });
         const responseData = {
             location: data.location,
             queueNumber: updatedQueueNumber,
@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
         };
         console.log('Emitting update:', responseData); 
         io.emit('update-queue', responseData);
-    });
+    });*/
     socket.on('disconnect', () => {
         console.log('A client disconnected');
     });
