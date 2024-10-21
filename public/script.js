@@ -66,6 +66,7 @@ const socket = new WebSocket('ws://localhost:3000');
     socket.addEventListener('message', function (event) {
         console.log('Data received:', event.data);
         const customerData = JSON.parse(event.data); //const customerData = (event.data);
+        console.log('Data received from server:', customerData);
         const list = document.getElementById('scanned-customers');
         const listItem = document.createElement('li');
         listItem.textContent = `Customer joined: Location: ${customerData.location}, Queue: ${customerData.queueNumber}, Time: ${customerData.timestamp}`;
