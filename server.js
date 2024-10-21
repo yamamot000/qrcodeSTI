@@ -36,12 +36,19 @@ io.on('connection', (socket) => {
             location: data.location,
             queueNumber: data.queueNumber,
             timestamp: new Date().toLocaleString()
-        });*/
+        });
         console.log('Emitting update:', {
             location: data.location,
             queueNumber: updatedQueueNumber,
             timestamp: new Date().toLocaleString()
-        });
+        });*/
+        const responseData = {
+            location: data.location,
+            queueNumber: updatedQueueNumber,
+            timestamp: new Date().toLocaleString()
+        };
+        console.log('Emitting update:', responseData); 
+        io.emit('update-queue', responseData);
     });
     socket.on('disconnect', () => {
         console.log('A client disconnected');
