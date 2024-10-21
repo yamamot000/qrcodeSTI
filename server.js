@@ -32,18 +32,21 @@ io.on('connection', (socket) => {
         } else if (data.location === 'front-desk') {
             updatedQueueNumber = ++frontDeskQueue; 
         }
-        io.emit('update-queue',{
+        /*io.emit('update-queue',{
             location: data.location,
             queueNumber: data.queueNumber,
             timestamp: new Date().toLocaleString()
+        });*/
+        console.log('Emitting update:', {
+            location: data.location,
+            queueNumber: updatedQueueNumber,
+            timestamp: new Date().toLocaleString()
         });
-
     });
     socket.on('disconnect', () => {
         console.log('A client disconnected');
     });
 });
-
 server.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
