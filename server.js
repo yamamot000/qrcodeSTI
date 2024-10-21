@@ -41,8 +41,8 @@ io.on('connection', (socket) => {
             location: data.location,
             queueNumber: updatedQueueNumber,
             timestamp: new Date().toLocaleString()
-        });
-        const responseData = {
+        });*/
+        /*const responseData = {
             location: data.location,
             queueNumber: updatedQueueNumber,
             timestamp: new Date().toLocaleString()
