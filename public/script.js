@@ -41,15 +41,15 @@ function updateQueueNumbers(location, newQueueNumber) {
     if (location === 'cashier') {
         cashierQueue = newQueueNumber;
         document.getElementById('cashier-queue-number').textContent = cashierQueue;
-        generateQRCode('cashier', 'cashier', cashierQueue);
+        generateQRCode('cashier', 'cashier', cashierQueue++);
     } else if (location === 'registrar') {
         registrarQueue = newQueueNumber;
         document.getElementById('registrar-queue-number').textContent = registrarQueue;
-        generateQRCode('registrar', 'registrar', registrarQueue);
+        generateQRCode('registrar', 'registrar', registrarQueue++);
     } else if (location === 'front-desk') {
         frontDeskQueue = newQueueNumber;
         document.getElementById('front-desk-queue-number').textContent = frontDeskQueue;
-        generateQRCode('front-desk', 'front-desk', frontDeskQueue);
+        generateQRCode('front-desk', 'front-desk', frontDeskQueue++);
     }
 }
 
