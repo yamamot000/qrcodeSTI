@@ -157,7 +157,6 @@
             })
             .then(response => response.json())
             .then(updatedData => {
-                console.log('Customer scan confirmed and queue updated:', updatedData);
                 document.getElementById('confirmation-text').innerText = 
                     `You have joined the queue for ${updatedData.location}. Your queue number is ${updatedData.queueNumber}. The QR code was generated at: ${updatedData.timestamp}.`;
             })
