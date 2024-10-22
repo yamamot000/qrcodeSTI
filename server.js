@@ -70,6 +70,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 let cashierQueue = 1;
 let registrarQueue = 1;
 let frontDeskQueue = 1;
+let sseClients = [];
 
 app.get('/join-queue', (req, res) => {
     res.sendFile(path.join(__dirname, 'qrcodeSTI/public/queue.html'));
@@ -84,17 +85,30 @@ app.get('/join-queue', (req, res) => {
     res.json(customerData);
 });*/
 app.get('/api/customer-updates', (req, res) => {
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
+    try {
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
 
-    console.log('Client connected for customer updates');
+        console.log('Client connected for customer updates');
+        sseClients.push(res);
+        const keepAliveInterval = setInterval(() => {
+            res.write(': keep-alive\n\n'); 
+        }, 20000);
+        req.on('close', () => {
+            clearInterval(keepAliveInterval); 
+            sseClients = sseClients.filter(client => client !== res);
+            console.log('Client disconnected');
+        });
 
-    // When the client disconnects, close the connection
-    req.on('close', () => {
-        console.log('Client disconnected');
-    });
+    } catch (error) {
+        console.error('Error in SSE route:', error);
+        res.status(500).send('Internal Server Error');
+    }
 });
+function broadcastCustomerUpdate(data) {
+    sseClients.forEach(client => client.write(`data: ${JSON.stringify(data)}\n\n`));
+}
 app.post('/api/customer-scanned', (req, res) => {
     const data = req.body;
 
@@ -112,10 +126,13 @@ app.post('/api/customer-scanned', (req, res) => {
         queueNumber: updatedQueueNumber,
         timestamp: new Date().toLocaleString()
     };
-
-    console.log('Customer scanned:', responseData);
-    res.write(`data: ${JSON.stringify(responseData)}\n\n`);
+    console.log('Customer scanned:', responseData);;
+    broadcastCustomerUpdate(responseData);
     res.json(responseData);
+
+    req.on('error', (err) => {
+        console.error('SSE connection error:', err);
+    });
 });
 
 app.listen(port, () => {
