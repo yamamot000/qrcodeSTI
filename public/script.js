@@ -41,19 +41,19 @@ function updateQueueNumbers(location, newQueueNumber) {
     if (location === 'cashier') {
         cashierQueue = newQueueNumber;
         document.getElementById('cashier-queue-number').textContent = cashierQueue;
-        generateQRCode('cashier', 'cashier', cashierQueue++);
+        generateQRCode('cashier', 'cashier', cashierQueue);
     } else if (location === 'registrar') {
         registrarQueue = newQueueNumber;
         document.getElementById('registrar-queue-number').textContent = registrarQueue;
-        generateQRCode('registrar', 'registrar', registrarQueue++);
+        generateQRCode('registrar', 'registrar', registrarQueue);
     } else if (location === 'front-desk') {
         frontDeskQueue = newQueueNumber;
         document.getElementById('front-desk-queue-number').textContent = frontDeskQueue;
-        generateQRCode('front-desk', 'front-desk', frontDeskQueue++);
+        generateQRCode('front-desk', 'front-desk', frontDeskQueue);
     }
 }
 
-const socket = new WebSocket('ws://localhost:3000');
+/*const socket = new WebSocket('ws://localhost:3000');
 
 // Event that triggers when a QR is scanned
 function onQRCodeScan(location) {
@@ -73,6 +73,21 @@ const socket = new WebSocket('ws://localhost:3000');
     function onQRCodeScan(location) {
         const data = JSON.stringify({ location: location });
         socket.send(data);
-    }
+    }*/
+const eventSource = new EventSource('/api/customer-updates');
+eventSource.onmessage = function(event) {
+    const customerData = JSON.parse(event.data);
+    console.log('Received customer data:', customerData);
+    updateQueueNumbers(customerData.location, customerData.queueNumber);
+    const list = document.getElementById('scanned-customers');
+    const listItem = document.createElement('li');
+    listItem.textContent = `Customer joined: Location: ${customerData.location}, Queue: ${customerData.queueNumber}, Time: ${customerData.timestamp}`;
+    list.appendChild(listItem);
+};
+
+eventSource.onerror = function(event) {
+    console.error('Error with SSE:', event);
+};
+refreshQRCodes();
 setInterval(refreshQRCodes, 30000);
 window.onload = refreshQRCodes;
