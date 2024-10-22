@@ -102,7 +102,7 @@
         queueMessageText.innerText = 
             `You have joined the queue for ${queueLocation}. Your queue number is ${queue}. The QR code was generated at: ${timestamp}.`;
             
-        const socket = new WebSocket('ws://localhost:3000');
+        /*const socket = new WebSocket('ws://localhost:3000');
 
         // Event listener that triggers when page is opened on mobile
         socket.addEventListener('open', function () {
@@ -141,7 +141,31 @@
         // Start countdown when the page loads
         document.addEventListener('DOMContentLoaded', function() {
             setInnerTexts();
-        });
+        });*/
+        function sendCustomerData() {
+            const customerData = {
+                location: queueLocation,
+                queueNumber: queueNumber,
+                timestamp: timestamp
+            };
+            fetch('/api/customer-scanned', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(customerData)
+            })
+            .then(response => response.json())
+            .then(updatedData => {
+                console.log('Customer scan confirmed and queue updated:', updatedData);
+                document.getElementById('confirmation-text').innerText = 
+                    `You have joined the queue for ${updatedData.location}. Your queue number is ${updatedData.queueNumber}. The QR code was generated at: ${updatedData.timestamp}.`;
+            })
+            .catch(error => {
+                console.error('Error sending customer data:', error);
+            });
+        }
+        window.onload = sendCustomerData;
     </script>
 </body>
 </html>
