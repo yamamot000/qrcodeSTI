@@ -74,7 +74,7 @@ const socket = new WebSocket('ws://localhost:3000');
         const data = JSON.stringify({ location: location });
         socket.send(data);
     }*/
-const eventSource = new EventSource('/api/customer-updates');
+const eventSource = new EventSource('http://localhost:3000/api/customer-updates');
 eventSource.onmessage = function(event) {
     const customerData = JSON.parse(event.data);
     console.log('Received customer data:', customerData);
@@ -84,10 +84,10 @@ eventSource.onmessage = function(event) {
     listItem.textContent = `Customer joined: Location: ${customerData.location}, Queue: ${customerData.queueNumber}, Time: ${customerData.timestamp}`;
     list.appendChild(listItem);
 };
-
 eventSource.onerror = function(event) {
     console.error('Error with SSE:', event);
 };
 refreshQRCodes();
 setInterval(refreshQRCodes, 30000);
 window.onload = refreshQRCodes;
+
