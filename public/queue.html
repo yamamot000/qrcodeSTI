@@ -95,8 +95,8 @@
 
         const params = new URLSearchParams(window.location.search);
         const queueLocation = params.get('location');
-        const queue = params.get('queue');
-        const timestamp = new Date(params.get('timestamp')).toLocaleString();
+        const queueNumber = params.get('queue');
+        const timestamp = new Date(params.get('timestamp')).toLocaleString(); 
 
         // Gets a debug message
         queueMessageText.innerText = 
@@ -145,7 +145,7 @@
         function sendCustomerData() {
             const customerData = {
                 location: queueLocation,
-                queueNumber: queue,
+                queueNumber: queueNumber,
                 timestamp: timestamp
             };
             fetch('/api/customer-scanned', {
