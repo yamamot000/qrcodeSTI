@@ -1,7 +1,6 @@
 let cashierQueue = 1;
 let registrarQueue = 1;
 let frontDeskQueue = 1;
-
 // Generates QR Code to be scanned by the customer
 // Links are unique based on location, queue number, and timestamp
 function generateQRCode(elementId, location, queueNumber) {
