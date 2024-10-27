@@ -85,34 +85,23 @@ app.get('/join-queue', (req, res) => {
     res.json(customerData);
 });*/
 app.get('/api/customer-updates', (req, res) => {
-    try {
-        res.setHeader('Content-Type', 'text/event-stream');
-        res.setHeader('Cache-Control', 'no-cache');
-        res.setHeader('Connection', 'keep-alive');
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
 
-        console.log('Client connected for customer updates');
-        sseClients.push(res);
-        const keepAliveInterval = setInterval(() => {
-            res.write(': keep-alive\n\n'); 
-        }, 20000);
-        req.on('close', () => {
-            clearInterval(keepAliveInterval); 
-            sseClients = sseClients.filter(client => client !== res);
-            console.log('Client disconnected');
-        });
+    sseClients.push(res);
 
-    } catch (error) {
-        console.error('Error in SSE route:', error);
-        res.status(500).send('Internal Server Error');
-    }
+    req.on('close', () => {
+        sseClients = sseClients.filter(client => client !== res);
+    });
 });
 function broadcastCustomerUpdate(data) {
     sseClients.forEach(client => client.write(`data: ${JSON.stringify(data)}\n\n`));
 }
 app.post('/api/customer-scanned', (req, res) => {
     const data = req.body;
-
     let updatedQueueNumber;
+    
     if (data.location === 'cashier') {
         updatedQueueNumber = ++cashierQueue;
     } else if (data.location === 'registrar') {
@@ -126,13 +115,8 @@ app.post('/api/customer-scanned', (req, res) => {
         queueNumber: updatedQueueNumber,
         timestamp: new Date().toLocaleString()
     };
-    console.log('Customer scanned:', responseData);;
     broadcastCustomerUpdate(responseData);
     res.json(responseData);
-
-    req.on('error', (err) => {
-        console.error('SSE connection error:', err);
-    });
 });
 
 app.listen(port, () => {
