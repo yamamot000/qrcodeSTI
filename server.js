@@ -98,7 +98,7 @@ app.get('/api/customer-updates', (req, res) => {
 function broadcastCustomerUpdate(data) {
     sseClients.forEach(client => client.write(`data: ${JSON.stringify(data)}\n\n`));
 }
-app.post('/api/customer-scanned', (req, res) => {
+app.post('/api/customer-updates', (req, res) => {
     const data = req.body;
     let updatedQueueNumber;
     
