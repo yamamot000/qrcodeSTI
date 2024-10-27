@@ -16,7 +16,7 @@
 
     <!-- Main Container -->
     <div class="container" id="container">
-        <p>Version: 10182024.linking</p><br>
+        <p>Version: 10272024.linking</p><br>
         <div class="wait-time">Estimated Waiting Time: <span id="waiting-time">00:00</span></div>     
         <p id="confirmation-text">You have successfully joined the queue.</p>
         
@@ -142,6 +142,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             setInnerTexts();
         });
+
+
         function sendCustomerData() {
             const customerData = {
                 location: queueLocation,
@@ -164,7 +166,7 @@
                 console.error('Error sending customer data:', error);
             });
         }
-        // window.onload = sendCustomerData();
+        window.onload = sendCustomerData;
     </script>
 </body>
 </html>
