@@ -83,9 +83,9 @@ eventSource.onmessage = function(event) {
     listItem.textContent = `Customer joined: Location: ${customerData.location}, Queue: ${customerData.queueNumber}, Time: ${customerData.timestamp}`;
     list.appendChild(listItem);
 };
-eventSource.onerror = function(event) {
+/*eventSource.onerror = function(event) {
     console.error('Error with SSE:', event);
-};
+};*/
 refreshQRCodes();
 setInterval(refreshQRCodes, 30000);
 //window.onload = refreshQRCodes;
