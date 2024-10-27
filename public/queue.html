@@ -72,11 +72,11 @@
         function setInnerTexts() {
             // Throws error if either one of the values are null.
             try {
-                if (queueLocation != null && queue != null && timestamp != null){
-                    console.log(queueLocation, ' ', queue, ' ', timestamp);
+                if (queueLocation != null && queueNumber != null && timestamp != null){
+                    console.log(queueLocation, ' ', queueNumber, ' ', timestamp);
                     startCountdown();
                     windowNameText.innerText = `${queueLocation}`;
-                    queueNumberText.innerText = `${queue}`;
+                    queueNumberText.innerText = `${queueNumber}`;
                     timestampText.innerText = `${timestamp}`;
 
                     // TODO must send a signal to the server that this queue is taken.
@@ -100,9 +100,9 @@
 
         // Gets a debug message
         queueMessageText.innerText = 
-            `You have joined the queue for ${queueLocation}. Your queue number is ${queue}. The QR code was generated at: ${timestamp}.`;
+            `You have joined the queue for ${queueLocation}. Your queue number is ${queueNumber}. The QR code was generated at: ${timestamp}.`;
             
-        /*const socket = new WebSocket('ws://localhost:3000');
+        const socket = new WebSocket('ws://localhost:3000');
 
         // Event listener that triggers when page is opened on mobile
         socket.addEventListener('open', function () {
@@ -125,7 +125,7 @@
             }
             const customerData = {
                 location: queueLocation,
-                queueNumber: queue,
+                queueNumber: queueNumber,
                 timestamp: timestamp
             };
             socket.send(JSON.stringify(customerData));
@@ -141,7 +141,7 @@
         // Start countdown when the page loads
         document.addEventListener('DOMContentLoaded', function() {
             setInnerTexts();
-        });*/
+        });
         function sendCustomerData() {
             const customerData = {
                 location: queueLocation,
@@ -164,7 +164,7 @@
                 console.error('Error sending customer data:', error);
             });
         }
-        //window.onload = sendCustomerData;
+        // window.onload = sendCustomerData();
     </script>
 </body>
 </html>
