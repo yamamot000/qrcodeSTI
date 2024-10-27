@@ -84,7 +84,7 @@ app.get('/join-queue', (req, res) => {
 
     res.json(customerData);
 });*/
-app.get('http://localhost:3000/api/customer-updates', (req, res) => {
+app.get('https://yamamot000.github.io/api/customer-updates', (req, res) => {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
@@ -98,7 +98,7 @@ app.get('http://localhost:3000/api/customer-updates', (req, res) => {
 function broadcastCustomerUpdate(data) {
     sseClients.forEach(client => client.write(`data: ${JSON.stringify(data)}\n\n`));
 }
-app.post('http://localhost:3000/api/customer-updates', (req, res) => {
+app.post('https://yamamot000.github.io/api/customer-updates', (req, res) => {
     const data = req.body;
     let updatedQueueNumber;
     

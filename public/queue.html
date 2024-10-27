@@ -152,7 +152,7 @@
             // Ensure variables are defined
             if (!queueLocation || !queueNumber || !timestamp) {
                 console.error('Missing data: queueLocation, queueNumber, or timestamp is not defined.');
-                alert("Error: Missing data. Please try again.");
+                // alert("Error: Missing data. Please try again.");
                 return;
             }
 
@@ -163,7 +163,7 @@
             };
 
             // Specify the full URL if not on the same origin
-            fetch('http://localhost:3000/api/customer-updates', {
+            fetch('https://yamamot000.github.io/api/customer-updates', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
