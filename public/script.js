@@ -36,7 +36,7 @@ function refreshQRCodes() {
 }
 
 // Generates a new queue number when QR code is scanned.
-function updateQueueNumbers(location, newQueueNumber) {
+/*function updateQueueNumbers(location, newQueueNumber) {
     if (location === 'cashier') {
         cashierQueue = newQueueNumber;
         document.getElementById('cashier-queue-number').textContent = cashierQueue;
@@ -50,7 +50,7 @@ function updateQueueNumbers(location, newQueueNumber) {
         document.getElementById('front-desk-queue-number').textContent = frontDeskQueue;
         generateQRCode('front-desk', 'front-desk', frontDeskQueue);
     }
-}
+}*/
 
 /*const socket = new WebSocket('ws://localhost:3000');
 
@@ -73,11 +73,26 @@ const socket = new WebSocket('ws://localhost:3000');
         const data = JSON.stringify({ location: location });
         socket.send(data);
     }*/
-const eventSource = new EventSource('http://localhost:3000/api/customer-updates');
+const eventSource = new EventSource('/api/customer-updates');
 eventSource.onmessage = function(event) {
     const customerData = JSON.parse(event.data);
-    console.log('Received customer data:', customerData);
-    updateQueueNumbers(customerData.location, customerData.queueNumber);
+
+    // Update queue number and display scanned customer based on location
+    if (customerData.location === 'cashier') {
+        cashierQueue = customerData.queueNumber;
+        document.getElementById('cashier-queue-number').textContent = cashierQueue;
+        generateQRCode('cashier', 'cashier', cashierQueue);
+    } else if (customerData.location === 'registrar') {
+        registrarQueue = customerData.queueNumber;
+        document.getElementById('registrar-queue-number').textContent = registrarQueue;
+        generateQRCode('registrar', 'registrar', registrarQueue);
+    } else if (customerData.location === 'front-desk') {
+        frontDeskQueue = customerData.queueNumber;
+        document.getElementById('front-desk-queue-number').textContent = frontDeskQueue;
+        generateQRCode('front-desk', 'front-desk', frontDeskQueue);
+    }
+
+    // Display the scanned customer in the "Scanned Customers" list
     const list = document.getElementById('scanned-customers');
     const listItem = document.createElement('li');
     listItem.textContent = `Customer joined: Location: ${customerData.location}, Queue: ${customerData.queueNumber}, Time: ${customerData.timestamp}`;
