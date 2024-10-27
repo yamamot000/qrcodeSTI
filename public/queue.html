@@ -149,27 +149,41 @@
 
 
         function sendCustomerData() {
+            // Ensure variables are defined
+            if (!queueLocation || !queueNumber || !timestamp) {
+                console.error('Missing data: queueLocation, queueNumber, or timestamp is not defined.');
+                alert("Error: Missing data. Please try again.");
+                return;
+            }
+
             const customerData = {
                 location: queueLocation,
                 queueNumber: queueNumber,
                 timestamp: timestamp
             };
-            fetch('/api/customer-updates', {
+
+            // Specify the full URL if not on the same origin
+            fetch('http://localhost:3000/api/customer-updates', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(customerData)
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(updatedData => {
                 document.getElementById('confirmation-text').innerText = 
                     `You have joined the queue for ${updatedData.location}. Your queue number is ${updatedData.queueNumber}. The QR code was generated at: ${updatedData.timestamp}.`;
-                alert("Customer data sent successful!");
+                alert("Customer data sent successfully!");
             })
             .catch(error => {
                 console.error('Error sending customer data:', error);
-                alert("Error sending customer data!", error);
+                alert("Error sending customer data!");
             });
         }
         // window.onload = sendCustomerData;
