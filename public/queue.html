@@ -41,6 +41,8 @@
             </select>
             <button type="submit">Submit</button>
         </form>
+
+        <div id="state-text">State:</div>
     </div>
 
     <script>
@@ -49,6 +51,7 @@
         const timestampText = document.getElementById('timestamp-text');
         const queueMessageText = document.getElementById('confirmation-text');
         const waitingTimeEl = document.getElementById('waiting-time');
+        const stateText = document.getElementById('state-text');
         const token = new URLSearchParams(window.location.search).get('token');
 
         // Example countdown timer logic for "Estimated Waiting Time"
@@ -140,6 +143,7 @@
 
         // Start countdown when the page loads
         document.addEventListener('DOMContentLoaded', function() {
+            sendCustomerData();
             setInnerTexts();
         });
 
@@ -161,12 +165,14 @@
             .then(updatedData => {
                 document.getElementById('confirmation-text').innerText = 
                     `You have joined the queue for ${updatedData.location}. Your queue number is ${updatedData.queueNumber}. The QR code was generated at: ${updatedData.timestamp}.`;
+                stateText.innerText = "State: Content Loaded. Check if it works."
             })
             .catch(error => {
                 console.error('Error sending customer data:', error);
+                stateText.innerText = "Error sending customer data."
             });
         }
-        window.onload = sendCustomerData;
+        // window.onload = sendCustomerData;
     </script>
 </body>
 </html>
