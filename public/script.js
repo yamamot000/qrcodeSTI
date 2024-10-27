@@ -88,5 +88,5 @@ eventSource.onerror = function(event) {
 };
 refreshQRCodes();
 setInterval(refreshQRCodes, 30000);
-window.onload = refreshQRCodes;
+//window.onload = refreshQRCodes;
 
